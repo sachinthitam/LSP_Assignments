@@ -12,8 +12,7 @@ int main(int argc, char *argv[])
     struct dirent *entry = NULL;
     char oldname[50];
     char newname[50];
-    int iCnt = 1;
-    
+
     dp = opendir(argv[1]);
     if(dp == NULL)
     {
@@ -24,10 +23,9 @@ int main(int argc, char *argv[])
     while((entry = readdir(dp)) != NULL)
     {
         sprintf(oldname,"%s/%s",argv[1],entry->d_name);
-        sprintf(newname,"%s/%d.txt",argv[1],iCnt);
+        sprintf(newname,"%s/%s",argv[2],entry->d_name);
 
         rename(oldname,newname);
-        iCnt++;
     }
 
     closedir(dp);

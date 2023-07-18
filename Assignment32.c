@@ -1,51 +1,42 @@
-//Q. Write a program which accept directory name and file name from user and check wheather this file is present in that directory or not
-
-#include <stdio.h>
-#include <dirent.h>
-#include <string.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<fcntl.h>
+#include<unistd.h>
+#include<string.h>
+#include<dirent.h>
+#include<sys/dir.h>
 
 int main(int argc, char *argv[])
 {
-    char dirname[25];
-    char filename[30];
-
-
-    printf("Enter the directory name: ");
-    scanf("%s", dirname);
-
-    printf("Enter the file name: ");
-    scanf("%s", filename);
-
-  if(argc!=1)
-
-      {
-        printf("Insufficient arguments\n");
-         return -1;
-       }
-
-    DIR *dir = opendir(dirname);
-
-
-    if (dir) {
-        struct dirent *entry;
-        int found = 0;
-
-  
-        while ((entry = readdir(dir)) != NULL) {
-            if (strcmp(entry->d_name, filename) == 0) {
-                found = 1;
-                break;
-            }
-        }
-
-        if (found) {
-            printf("The file '%s' is present in the directory '%s'.\n", filename, dirname);
-        } else {
-            printf("The file '%s' is not found in the directory '%s'.\n", filename, dirname);
-        }
-
+    DIR *dp = NULL;
+    struct dirent *entry = NULL;
+    char path[50] = {'\0'};
     
-        closedir(dir);
+    dp = opendir(argv[1]);
+    if(dp == NULL)
+    {
+        printf("Unable to open the directory\n");
+        return -1;
+    } 
 
+    while((entry = readdir(dp)) != NULL)
+    {
+        if((strcmp(argv[2], entry->d_name)) == 0)
+        {
+            printf("File is present in directory\n");
+            sprintf(path,"%s/%s",argv[1],argv[2]);
+            remove(path);
+            printf("File is succesfully deleted\n");
+            break;
+        }
+    }
+
+    if(entry == NULL)
+    {
+        printf("There is no such file\n");
+        return -1;
+    }
+
+    closedir(dp);
     return 0;
 }
